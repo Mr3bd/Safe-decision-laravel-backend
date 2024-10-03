@@ -23,7 +23,7 @@ Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
 Route::post('/register-institution', [InstitutionController::class, 'register'])->withoutMiddleware('auth');
 Route::post('/verify-otp', [InstitutionController::class, 'verifyOtp']);
 Route::get('/institution-types', [InstitutionController::class, 'getInstitutionTypes']);
-Route::post('/compare', [VehicleComparisonController::class, 'compare']);
+Route::post('/compare', [VehicleComparisonController::class, 'compareImages']);
 
 
 
