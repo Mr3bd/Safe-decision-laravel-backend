@@ -4,31 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePendingInstitutionsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('pending_institutions', function (Blueprint $table) {
-            $table->id()->unique();
+            $table->bigIncrements('id')->unique();
             $table->string('name');
             $table->string('institution_number');
-            $table->unsignedBigInteger('institution_type_id');
             $table->timestamps();
+            $table->unsignedBigInteger('institution_type_id')->index('pending_institutions_institution_type_id_foreign');
+
+            $table->primary(['id']);
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('pending_institutions');
     }
-}
+};

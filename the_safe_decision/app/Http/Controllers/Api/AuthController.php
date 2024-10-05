@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Models\City;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,5 +65,15 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully!']);
+    }
+
+    // Get all cities (sorted alphabetically)
+    public function getCities()
+    {
+        $cities = City::orderBy('name_en')->get();
+        return response()->json([
+            'data' => $cities
+        ], 200, [], JSON_UNESCAPED_UNICODE);
+
     }
 }

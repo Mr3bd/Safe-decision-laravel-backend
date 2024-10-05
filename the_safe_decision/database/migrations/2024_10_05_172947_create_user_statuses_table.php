@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_roles', function (Blueprint $table) {
-            $table->id(); // unsignedBigInteger by default
-            $table->string('role_name');
+        Schema::create('user_statuses', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('status_name');
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('user_statuses');
     }
 };

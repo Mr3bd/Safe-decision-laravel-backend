@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_statuses', function (Blueprint $table) {
-            $table->id(); // unsignedBigInteger by default
-            $table->string('status_name');
+        Schema::create('institutions', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('institution_number')->unique();
             $table->timestamps();
+            $table->unsignedBigInteger('institution_type_id')->index('institutions_institution_type_id_foreign');
         });
     }
 
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_statuses');
+        Schema::dropIfExists('institutions');
     }
 };

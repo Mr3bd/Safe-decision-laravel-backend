@@ -6,18 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('cities', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('name_en');
             $table->string('name_ar');
-            $table->foreignId('country_id')->constrained('countries')->onDelete('cascade');
+            $table->unsignedBigInteger('country_id')->index('cities_country_id_foreign');
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('cities');
     }

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('institution_types', function (Blueprint $table) {
-                    $table->id(); // primary key
-                    $table->string('name'); // localized name
-                    $table->string('nameEn'); // English name
-                    $table->timestamps(); // created_at, updated_at
+        Schema::create('vehicle_features', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name_en');
+            $table->string('name_ar');
+            $table->timestamps();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('institution_types');
+        Schema::dropIfExists('vehicle_features');
     }
 };

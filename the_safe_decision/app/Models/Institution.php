@@ -22,5 +22,11 @@ class Institution extends Model
     {
         return $this->hasMany(User::class);
     }
+    
+
+    public function institutionCars()
+    {
+        return $this->hasMany(InstitutionCar::class);
+    }
 
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\CarManufacture;
 use App\Models\CarModel;
 use App\Models\InstitutionCar;
+use App\Models\VehicleFeature;
 use Illuminate\Support\Facades\Auth;
 
 class CarController extends Controller
@@ -51,5 +52,33 @@ class CarController extends Controller
         ]);
 
         return response()->json($institutionCar, 200);
+    }
+
+    // Get all car manufactures (sorted alphabetically)
+    public function getVehicleFeatures()
+    {
+        $manufactures = VehicleFeature::orderBy('name_en')->get();
+        return response()->json([
+            'data' => $manufactures
+        ], 200, [], JSON_UNESCAPED_UNICODE);
+
+    }
+
+    public function getInstitutionCars(Request $request)
+    {
+        // Assuming you have the user's institution ID stored in the auth user
+        $user = $request->user();
+        
+        // Fetch institution cars with related institution and model data
+        $institutionCars = InstitutionCar::with(['institution', 'model.manufacture'])
+            ->where('institution_id', $user->institution_id) // Filter by user's institution
+            ->get();
+
+        // Return the response
+
+        return response()->json([
+            'data' => $institutionCars
+        ], 200, [], JSON_UNESCAPED_UNICODE);
+
     }
 }

@@ -9,17 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
+    public function up(): void
     {
         Schema::create('institution_cars', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('institution_id')->constrained('institutions')->onDelete('cascade'); // Assuming you have institutions table
-            $table->foreignId('model_id')->constrained('car_models')->onDelete('cascade');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('institution_id')->index('institution_cars_institution_id_foreign');
+            $table->unsignedBigInteger('model_id')->index('institution_cars_model_id_foreign');
             $table->timestamps();
+            $table->string('tagNumber')->nullable();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('institution_cars');
     }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\VehicleComparisonController;
 use App\Http\Controllers\Api\CarController;
+use App\Http\Controllers\Api\RentalContractController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -34,4 +35,14 @@ Route::get('/car-models/{manufactureId}', [CarController::class, 'getModels']);
 
 // Route to create an institution car
 Route::middleware('auth:sanctum')->post('/institution-cars', [CarController::class, 'createInstitutionCar']);
+Route::middleware('auth:sanctum')->get('/institution-cars', [CarController::class, 'getInstitutionCars']);
 
+
+Route::get('/vehicle-features', [CarController::class, 'getVehicleFeatures']);
+
+
+// Route to get Cities
+Route::get('/cities', [AuthController::class, 'getCities']);
+
+
+Route::middleware('auth:sanctum')->post('/create-car-rentalcontract', [RentalContractController::class, 'store']);

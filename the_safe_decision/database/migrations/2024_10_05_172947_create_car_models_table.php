@@ -6,19 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('car_models', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('manufacturer_id')->constrained('car_manufacturers')->onDelete('cascade');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('manufacturer_id')->index('car_models_manufacturer_id_foreign');
             $table->string('name_en');
             $table->string('name_ar');
-            $table->string('tag_number')->nullable(); // Optional tag number
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('car_models');
     }
