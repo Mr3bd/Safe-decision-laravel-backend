@@ -37,8 +37,9 @@ class VehicleComparisonController extends Controller
 
         // Prepare the OpenAI API request
         $client = new HttpClient();
-        $apiKey = env('OPENAI_API_KEY');
+        $apiKey = config('services.openai.api_key');;
         $url = 'https://api.openai.com/v1/chat/completions'; 
+        return response()->json(['description' => $description], JSON_UNESCAPED_UNICODE);
 
         // Prepare the JSON request body
         $data = [
