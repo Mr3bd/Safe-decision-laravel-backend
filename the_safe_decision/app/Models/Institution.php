@@ -12,7 +12,12 @@ class Institution extends Model
     protected $fillable = [
         'name',
         'institution_number',
-        'institution_type_id'
+        'institution_type_id',
+        'emergency_number',
+        'address_ar',
+        'address_en',
+        'logo_image',
+        'isActive'
     ];
 
     /**
@@ -23,6 +28,10 @@ class Institution extends Model
         return $this->hasMany(User::class);
     }
     
+    public function institutionType()
+    {
+        return $this->belongsTo(InstitutionType::class);
+    }
 
     public function institutionCars()
     {

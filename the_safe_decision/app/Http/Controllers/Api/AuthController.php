@@ -59,6 +59,21 @@ class AuthController extends Controller
     }
 
 
+    // Login user and issue token
+    public function getDataByToken(Request $request)
+    {
+        // Get the authenticated user with relationships
+        $user = Auth::user()->load('institution', 'role', 'status'); // Load relationships
+
+        // Create a new token for the user
+
+        // Return the user info and token
+        return response()->json([
+            'user' => $user,
+        ]);
+    }
+
+
     // Logout user
     public function logout(Request $request)
     {
@@ -67,13 +82,4 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully!']);
     }
 
-    // Get all cities (sorted alphabetically)
-    public function getCities()
-    {
-        $cities = City::orderBy('name_en')->get();
-        return response()->json([
-            'data' => $cities
-        ], 200, [], JSON_UNESCAPED_UNICODE);
-
-    }
 }

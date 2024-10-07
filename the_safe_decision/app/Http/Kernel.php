@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
@@ -62,6 +63,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'role' => RoleMiddleware::class, // Your custom role middleware
+        'checkrole' => CheckRole::class,
+
     ];
 
     /**

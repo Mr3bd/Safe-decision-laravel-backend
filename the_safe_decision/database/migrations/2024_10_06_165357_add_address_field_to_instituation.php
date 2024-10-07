@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+       // Add isActive column to institutions table
         Schema::table('institutions', function (Blueprint $table) {
-            $table->foreign(['institution_type_id'])->references(['id'])->on('institution_types')->onUpdate('restrict')->onDelete('cascade');
+            $table->string('address_en')->after('institution_type_id');
+            $table->string('address_ar')->after('institution_type_id');
+            $table->string('emergency_number')->after('institution_type_id');
         });
     }
 
@@ -22,7 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('institutions', function (Blueprint $table) {
-            $table->dropForeign('institutions_institution_type_id_foreign');
+            $table->dropColumn('address_en');
+            $table->dropColumn('address_ar');
+            $table->dropColumn('emergency_number');
         });
     }
 };
