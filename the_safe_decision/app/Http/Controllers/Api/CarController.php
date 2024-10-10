@@ -128,4 +128,50 @@ class CarController extends Controller
         return response()->json($institutionCar, 200);
     }
 
+
+   public function getAvailableInstitutionCars(Request $request)
+    {
+        // Validate the request parameters
+        $validator = Validator::make($request->all(), [
+            'rent_date' => 'required|date_format:Y-m-d H:i:s',
+            'return_date' => 'required|date_format:Y-m-d H:i:s',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        // Get rent_date and return_date from the request
+        $rentDate = $request->input('rent_date');
+        $returnDate = $request->input('return_date');
+
+        if ($returnDate <= $rentDate) {
+            return response()->json(['data' => []], 200); // Return empty data
+        }
+
+        // Assuming you have the user's institution ID stored in the authenticated user
+        $user = $request->user();
+        $institutionId = $user->institution_id;
+
+        // Fetch institution cars with related institution and model data
+        $institutionCars = InstitutionCar::with(['institution', 'model.manufacture'])
+            ->where('institution_id', $user->institution_id) // Filter by user's institution
+            ->whereDoesntHave('rentalContracts', function ($query) use ($rentDate, $returnDate) {
+                $query->where(function ($subQuery) use ($rentDate, $returnDate) {
+                    // Check for overlap conditions
+                    $subQuery->where('rent_date', '<=', $returnDate) // Existing rent starts before requested return
+                            ->where('return_date', '>=', $rentDate); // Existing return ends after requested rent
+                })
+                ->where('status_id', 1); // Exclude rental contracts with status_id equal to 1 (In Progress)
+            })
+            ->get(); // Retrieve all cars that are not rented within the given dates and meet the status condition
+
+        // Return the response
+        return response()->json([
+            'data' => $institutionCars
+        ], 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+
+
 }

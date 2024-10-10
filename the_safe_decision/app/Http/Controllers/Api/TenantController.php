@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tenant;
+use App\Models\TenantCarRentReview;
 use Illuminate\Support\Facades\Hash;
 
 class TenantController extends Controller
@@ -137,5 +138,50 @@ class TenantController extends Controller
             'message' => 'User updated successfully',
             'data' => $user,
         ], 200);
+    }
+
+
+    public function getReviewAverages($tenantId)
+    {
+        try {
+            // Fetch averages for each category
+            $averages = TenantCarRentReview::where('tenant_id', $tenantId)
+                ->selectRaw('
+                    AVG(appointments) as avg_appointments,
+                    AVG(accidents) as avg_accidents,
+                    AVG(violations) as avg_violations,
+                    AVG(financial) as avg_financial,
+                    AVG(cleanliness) as avg_cleanliness
+                ')
+                ->first();
+
+            // Check if reviews exist for the tenant
+            if (!$averages) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No reviews found for this tenant.'
+                ], 404);
+            }
+
+            // Prepare response
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'tenant_id' => $tenantId,
+                    'avg_appointments' => $averages->avg_appointments,
+                    'avg_accidents' => $averages->avg_accidents,
+                    'avg_violations' => $averages->avg_violations,
+                    'avg_financial' => $averages->avg_financial,
+                    'avg_cleanliness' => $averages->avg_cleanliness,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching the review averages.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

@@ -39,7 +39,6 @@ class VehicleComparisonController extends Controller
         $client = new HttpClient();
         $apiKey = config('services.openai.api_key');;
         $url = 'https://api.openai.com/v1/chat/completions'; 
-        // return response()->json(['description' => $apiKey], JSON_UNESCAPED_UNICODE);
 
         // Prepare the JSON request body
         $data = [
@@ -95,4 +94,90 @@ class VehicleComparisonController extends Controller
         // Return the generated description with proper encoding
         return response()->json(['description' => $description], JSON_UNESCAPED_UNICODE);
     }
+
+
+    public function compareExistImageWithNewImage(Request $request)
+    {
+        // Validate the input: one file and one image URL
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_url' => 'required|url',
+        ]);
+
+        // Get the language from the header (default to 'ar' if not provided)
+        $language = $request->header('Accept-Language', 'ar');
+
+        // Define text based on the language (Arabic or English)
+        $compareText = $language === 'ar' 
+            ? "قم بتحليل الصورة للسيارة فقط والتغيرات التي طرأت عليها بين الصورة الاولى والثانية بما في ذلك أي خدوش ملحوظة او اي تغييرات بشكل عام وبالتفصيل بالإضافة لتكلفة الأصلاح في الأردن بالدينار الأردني سواء كانت القطعة مستعملة او جديدة."
+            : "Analyze the car's images and the changes between the first and second image, including any noticeable scratches or general changes. Also, detail the repair cost in Jordanian Dinars, whether the parts are used or new.";
+
+        // Store the uploaded image in the 'CarComparison' folder in DigitalOcean Spaces
+        $folder = 'CarComparison';
+        $imagePath = $request->file('image')->store($folder, 'spaces'); // Store image in 'CarComparison/' folder
+
+        // Generate the URL for the uploaded image
+        $imageUrl = Storage::disk('spaces')->url($imagePath);
+
+        // Get the second image URL from the request
+        $image2Url = $request->input('image_url');
+
+        // Prepare the OpenAI API request
+        $client = new HttpClient();
+        $apiKey = config('services.openai.api_key');
+        $url = 'https://api.openai.com/v1/chat/completions'; 
+
+        // Prepare the JSON request body
+        $data = [
+            'model' => 'gpt-4-turbo',
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => [
+                        [
+                            'type' => 'text',
+                            'text' => $compareText // Use the selected language's text
+                        ],
+                        [
+                            'type' => 'image_url',
+                            'image_url' => ['url' => $image2Url]
+                        ],
+                        [
+                            'type' => 'image_url',
+                            'image_url' => ['url' => $imageUrl]
+                        ]
+                    ]
+                ]
+            ],
+            'max_tokens' => 1000
+        ];
+
+        // Make the API request
+        try {
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'Authorization' => "Bearer $apiKey",
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $data,
+            ]);
+
+            $body = json_decode($response->getBody(), true);
+
+            // Get the description and ensure it's properly decoded
+            $description = $body['choices'][0]['message']['content'] ?? 'No description provided';
+
+            // Convert the description to UTF-8 if necessary
+            if (!mb_check_encoding($description, 'UTF-8')) {
+                $description = mb_convert_encoding($description, 'UTF-8');
+            }
+
+        } catch (RequestException $e) {
+            return response()->json(['error' => 'Failed to process the AI: ' . $e->getMessage()], 500);
+        }
+
+        // Return the generated description with proper encoding
+        return response()->json(['description' => $description], JSON_UNESCAPED_UNICODE);
+    }
+
 }

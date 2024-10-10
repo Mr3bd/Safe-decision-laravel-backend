@@ -27,4 +27,9 @@ class InstitutionCar extends Model
     {
         return $this->belongsTo(Institution::class, 'institution_id');
     }
+
+    public function rentalContracts()
+    {
+        return $this->hasMany(RentalContract::class, 'car_id');
+    }
 }

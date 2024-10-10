@@ -14,13 +14,13 @@ class RentalContract extends Model
     protected $table = 'car_rent_contracts';
 
     // Specify the primary key if it's not 'id'
-    protected $primaryKey = 'id';
+    // protected $primaryKey = 'id';
 
     // Disable auto-incrementing if using a custom ID generation
-    public $incrementing = false;
+    // public $incrementing = false;
 
     // Specify the data types for the attributes if necessary
-    protected $keyType = 'string';
+    // protected $keyType = 'string';
 
     // Define the fillable attributes
     protected $fillable = [
@@ -35,6 +35,9 @@ class RentalContract extends Model
         'rear_image',
         'right_side',
         'left_side',
+        'fuel_before_reading',
+        'fuel_after_reading',
+        'price'
     ];
 
     // Define the relationships if necessary
@@ -45,11 +48,26 @@ class RentalContract extends Model
 
     public function car()
     {
-        return $this->belongsTo(Car::class);
+        return $this->belongsTo(InstitutionCar::class);
     }
 
     public function institution()
     {
         return $this->belongsTo(Institution::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(CarContractStatus::class);
+    }
+
+    public function featuresBefore()
+    {
+        return $this->belongsToMany(VehicleFeature::class, 'car_contract_before_vfeatures', 'contract_id', 'feature_id');
+    }
+
+    public function featuresAfter()
+    {
+        return $this->belongsToMany(VehicleFeature::class, 'car_contract_after_vfeatures', 'contract_id', 'feature_id');
     }
 }

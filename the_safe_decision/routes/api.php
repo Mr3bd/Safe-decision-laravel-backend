@@ -43,6 +43,8 @@ Route::middleware(['auth:sanctum', 'checkrole:1,2,4'])->post('/update-institutio
 
 Route::post('/compare', [VehicleComparisonController::class, 'compareImages']);
 
+Route::middleware('auth:sanctum')->post('/compare-car-rental-contract-images', [VehicleComparisonController::class, 'compareExistImageWithNewImage']);
+
 // Route to get all car manufactures (sorted)
 Route::get('/car-manufactures', [CarController::class, 'getManufactures']);
 
@@ -52,9 +54,8 @@ Route::get('/car-models/{manufactureId}', [CarController::class, 'getModels']);
 // Route to create an institution car
 Route::middleware('auth:sanctum')->post('/institution-cars', [CarController::class, 'createInstitutionCar']);
 Route::middleware('auth:sanctum')->get('/institution-cars', [CarController::class, 'getInstitutionCars']);
+Route::middleware('auth:sanctum')->get('/get-available-institution-cars', [CarController::class, 'getAvailableInstitutionCars']);
 Route::middleware('auth:sanctum')->post('/update-institution-cars/{id}', [CarController::class, 'updateInstitutionCar']);
-
-
 
 
 Route::get('/vehicle-features', [CarController::class, 'getVehicleFeatures']);
@@ -67,7 +68,22 @@ Route::middleware('auth:sanctum')->get('/cities-by-country/{countryId}', [Addres
 
 Route::middleware('auth:sanctum')->post('/create-car-rentalcontract', [RentalContractController::class, 'store']);
 
+Route::middleware(['auth:sanctum', 'checkrole:1,10'])->get('/get-my-car-contracts', [RentalContractController::class, 'getContracts']);
+
 Route::middleware(['auth:sanctum', 'checkrole:1,2,3,4'])->get('/get-tenants', [TenantController::class, 'getTenants']);
 
-
 Route::middleware(['auth:sanctum', 'checkrole:1,2,4'])->post('/add-or-update-tenant', [TenantController::class, 'addOrUpdateTenant']);
+
+Route::middleware(['auth:sanctum', 'checkrole:1,10'])->post('/cancel-rental-car-contracts/{id}', [RentalContractController::class, 'cancelContract']);
+Route::middleware(['auth:sanctum', 'checkrole:1,10'])->post('/complete-rental-car-contract', [RentalContractController::class, 'completeRentalContract']);
+
+Route::middleware(['auth:sanctum', 'checkrole:1,10'])->post('/extend-rental-car-contract/{id}', [RentalContractController::class, 'extendContract']);
+
+Route::middleware('auth:sanctum')->get('/rental-car-contract/download/{contract_id}', [RentalContractController::class, 'downloadContract']);
+
+Route::middleware('auth:sanctum')->get('/get-rental-car-contract/{id}', [RentalContractController::class, 'getContractById']);
+
+Route::middleware('auth:sanctum')->get('/rental-car-contract/{id}/features', [RentalContractController::class, 'getContractFeatures']);
+
+Route::middleware('auth:sanctum')->get('/get-tenant-avg-reviews/{tenantId}', [TenantController::class, 'getReviewAverages']);
+

@@ -27,7 +27,7 @@ class InstitutionController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:3',
             'orgName' => 'required|string|min:3',
-            'orgNumber' => 'required|string|digits:8|unique:institutions,institution_number',
+            'orgNumber' => 'required|string|min:8|regex:/^[0-9]+$/|unique:institutions,institution_number',
             'number' => 'required|string|regex:/^\+962[7][0-9]{8}$/',
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:8|regex:/[A-Z]/|regex:/[a-z]/|regex:/[0-9]/|regex:/[@$!%*?&]/',
@@ -196,7 +196,7 @@ class InstitutionController extends Controller
         // Validate the request
         $request->validate([
             'name' => 'required|string|min:3',
-            'institution_number' => 'required|string|digits:8|unique:institutions,institution_number',
+            'institution_number' => 'required|string|min:8|regex:/^[0-9]+$/|unique:institutions,institution_number',
             'institution_type_id' => 'required|exists:institution_types,id',
             'emergency_number' => 'required|string|regex:/^\+962[7][0-9]{8}$/',
             'address_ar' => 'required|string|max:255',
@@ -230,7 +230,7 @@ class InstitutionController extends Controller
     {
         $request->validate([
             'name' => 'required|string|min:3',
-            'institution_number' => 'required|string|digits:8|unique:institutions,institution_number,' . $id,
+            'institution_number' => 'required|string|min:8|regex:/^[0-9]+$/|unique:institutions,institution_number,' . $id,
             'institution_type_id' => 'required|exists:institution_types,id',
             'emergency_number' => 'required|string|regex:/^\+962[7][0-9]{8}$/',
             'address_ar' => 'required|string|max:255',

@@ -24,7 +24,7 @@ class RegisterInstitutionRequest extends FormRequest
         return [
             'name' => 'required|string|min:16',
             'institution_name' => 'required|string|min:16',
-            'institution_number' => 'required|digits:8|unique:users,institution_number',
+            'institution_number' => 'required|string|min:8|regex:/^[0-9]+$/|unique:users,institution_number',
             'phone_number' => ['required', 'regex:/^\+962[0-9]{9}$/'],
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
