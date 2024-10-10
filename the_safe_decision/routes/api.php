@@ -24,9 +24,9 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index']);
-});
+// Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
+//     Route::get('/admin', [AdminController::class, 'index']);
+// });
 Route::middleware(['auth:sanctum', 'checkrole:1'])->get('/get-users', [UserController::class, 'getUsers']);
 Route::get('/get-user-roles', [UserController::class, 'getUserRoles']);
 Route::middleware(['auth:sanctum', 'checkrole:1'])->post('/add-system-user', [UserController::class, 'addSystemUser']);
