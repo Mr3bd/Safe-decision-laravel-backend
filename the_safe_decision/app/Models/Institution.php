@@ -17,6 +17,7 @@ class Institution extends Model
         'address_ar',
         'address_en',
         'logo_image',
+        'balance',
         'isActive'
     ];
 

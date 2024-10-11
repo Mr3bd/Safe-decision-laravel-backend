@@ -202,6 +202,8 @@ class InstitutionController extends Controller
             'address_ar' => 'required|string|max:255',
             'address_en' => 'required|string|max:255',
             'logo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'balance' => 'required|numeric|min:0', // Validation for price
+
         ]);
 
         $image1Url = null;
@@ -220,6 +222,7 @@ class InstitutionController extends Controller
             'address_ar' => $request->address_ar,
             'address_en' => $request->address_en,
             'logo_image' => $image1Url,
+            'balance' => $request->balance
         ]);
 
         return response()->json(['message' => 'Institution added successfully!'], 201);
@@ -236,6 +239,7 @@ class InstitutionController extends Controller
             'address_ar' => 'required|string|max:255',
             'address_en' => 'required|string|max:255',
             'logo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'balance' => 'required|numeric|min:0',
             'isActive' => 'required|boolean',
         ]);
 

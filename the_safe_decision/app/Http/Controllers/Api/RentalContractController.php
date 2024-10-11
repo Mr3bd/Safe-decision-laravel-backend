@@ -14,6 +14,7 @@ use App\Models\TenantCarRentReview;
 use App\Models\CarContractBeforeVFeature;
 use App\Models\CarContractAfterVFeature;
 use App\Models\VehicleFeature;
+use App\Models\Institution;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -54,6 +55,15 @@ class RentalContractController extends Controller
 
         ]);
 
+        $user = Auth::user();
+        $institutionId = $user->institution_id;
+        $institution = Institution::find($institutionId);
+        
+        $cost = 2;
+
+        if ($institution->balance < $cost) {
+            return response()->json(['error' => 'Insufficient balance'], 400);
+        }
         // Handle file uploads
         $fileUrls = [];
         $folder = 'RentalContracts';
@@ -98,10 +108,7 @@ class RentalContractController extends Controller
                 'driver_license' => $fileUrls['driverLicenseImage'],
             ]);
         }
-
-        // Create a rental contract
-        $user = Auth::user();
-        $institutionId = $user->institution_id;
+        
         $fuelBeforeReading = $request['fuelBeforeReading'] ?? 0.5; // Defaults to 0.5 if not set
 
         $rentalContract = RentalContract::create([
@@ -127,8 +134,11 @@ class RentalContractController extends Controller
                 'contract_id' => $rentalContract->id
             ]);
         }
+        
+        $institution->balance -= $cost;
+        $institution->save();
 
-        return response()->json(['message' => 'Rental contract created successfully.'], 200);
+        return response()->json(['message' => 'Rental contract created successfully', 'cost' => $cost], 200);
     }
 
 
@@ -213,6 +223,7 @@ class RentalContractController extends Controller
             'violations' => 'required|integer|min:1|max:5',
             'financial' => 'required|integer|min:1|max:5',
             'cleanliness' => 'required|integer|min:1|max:5',
+            'description' => 'nullable|string|max:65535', // Validation for description
         ]);
 
         if ($validator->fails()) {
@@ -249,6 +260,7 @@ class RentalContractController extends Controller
                 'violations' => $request->violations,
                 'financial' => $request->financial,
                 'cleanliness' => $request->cleanliness,
+                'description' => $request->description,
             ]);
 
             return response()->json(['message' => 'Rental contract completed successfully'], 200);

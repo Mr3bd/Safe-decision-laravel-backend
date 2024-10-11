@@ -14,6 +14,7 @@ class InstitutionCar extends Model
         'institution_id',
         'model_id',
         'tagNumber',
+        'manu_year'
     ];
 
     // Define a relationship with CarModel

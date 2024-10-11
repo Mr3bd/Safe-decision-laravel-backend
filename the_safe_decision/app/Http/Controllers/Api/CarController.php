@@ -40,6 +40,12 @@ class CarController extends Controller
         $request->validate([
             'car_model_id' => 'required|exists:car_models,id',
             'tag_number' => 'required|string|max:255',
+            'manu_year' => [
+                'required',
+                'integer',
+                'min:2007', // The first car was invented around 1886
+                'max:' . date('Y') // Maximum is the current year
+            ],
         ]);
 
         // Get the authenticated user's institution ID
@@ -50,6 +56,7 @@ class CarController extends Controller
             'institution_id' => $institutionId,
             'model_id' => $request->car_model_id,
             'tagNumber' => $request->tag_number,
+            'manu_year' => $request->manu_year,
         ]);
 
         return response()->json($institutionCar, 200);
@@ -104,6 +111,12 @@ class CarController extends Controller
         $request->validate([
             'car_model_id' => 'required|exists:car_models,id',
             'tag_number' => 'required|string|max:255',
+            'manu_year' => [
+                'required',
+                'integer',
+                'min:2007', // The first car was invented around 1886
+                'max:' . date('Y') // Maximum is the current year
+            ],
         ]);
 
         // Get the authenticated user's institution ID
@@ -123,6 +136,7 @@ class CarController extends Controller
         // Update the car's attributes
         $institutionCar->model_id = $request->car_model_id;
         $institutionCar->tagNumber = $request->tag_number;
+        $institutionCar->manu_year = $request->manu_year;
         $institutionCar->save(); // Save changes to the database
 
         return response()->json($institutionCar, 200);

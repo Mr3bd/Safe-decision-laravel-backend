@@ -41,7 +41,7 @@ Route::middleware(['auth:sanctum', 'checkrole:1,2,4'])->post('/add-institution',
 
 Route::middleware(['auth:sanctum', 'checkrole:1,2,4'])->post('/update-institution/{id}', [InstitutionController::class, 'updateInstitution']);
 
-Route::post('/compare', [VehicleComparisonController::class, 'compareImages']);
+Route::middleware('auth:sanctum')->post('/compare', [VehicleComparisonController::class, 'compareImages']);
 
 Route::middleware('auth:sanctum')->post('/compare-car-rental-contract-images', [VehicleComparisonController::class, 'compareExistImageWithNewImage']);
 

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
+use App\Models\Institution;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleComparisonController extends Controller
 {
@@ -20,6 +22,16 @@ class VehicleComparisonController extends Controller
 
         // Get the language from the header (default to 'ar' if not provided)
         $language = $request->header('Accept-Language', 'ar');
+
+        $user = Auth::user();
+
+        $institutionId = $user->institution_id;
+        
+        $institution = Institution::find($institutionId);
+        $cost = 1;
+        if ($institution->balance < $cost) {
+            return response()->json(['error' => 'Insufficient balance'], 400);
+        }
 
         // Define text based on the language (Arabic or English)
         $compareText = $language === 'ar' 
@@ -80,19 +92,27 @@ class VehicleComparisonController extends Controller
             // Get the description and ensure it's properly decoded
             $description = $body['choices'][0]['message']['content'] ?? 'No description provided';
 
+            if (strlen(trim($description)) <= 10 || $description === 'No description provided') {
+                return response()->json(['error' => 'The process failed, please try again later'], 400);
+            }
+
             // Convert the description to UTF-8 if necessary
             if (!mb_check_encoding($description, 'UTF-8')) {
                 $description = mb_convert_encoding($description, 'UTF-8');
             }
 
+            $institution->balance -= $cost;
+            $institution->save();
+
         } catch (RequestException $e) {
             // return response()->json(['error' => $image1Url], 500);
 
-            return response()->json(['error' => 'Failed to communicate with OpenAI API: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'The process failed, please try again later: ' . $e->getMessage()], 500);
         }
 
+
         // Return the generated description with proper encoding
-        return response()->json(['description' => $description], JSON_UNESCAPED_UNICODE);
+        return response()->json(['description' => $description, 'cost'=> $cost], JSON_UNESCAPED_UNICODE);
     }
 
 
@@ -100,12 +120,25 @@ class VehicleComparisonController extends Controller
     {
         // Validate the input: one file and one image URL
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'image_url' => 'required|url',
+            'image2' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Get the second image URL from the request
+        $image1Url = $request->input('image_url');
+        
         // Get the language from the header (default to 'ar' if not provided)
         $language = $request->header('Accept-Language', 'ar');
+
+        $user = Auth::user();
+
+        $institutionId = $user->institution_id;
+        
+        $institution = Institution::find($institutionId);
+        $cost = 1;
+        if ($institution->balance < $cost) {
+            return response()->json(['error' => 'Insufficient balance'], 400);
+        }
 
         // Define text based on the language (Arabic or English)
         $compareText = $language === 'ar' 
@@ -114,13 +147,9 @@ class VehicleComparisonController extends Controller
 
         // Store the uploaded image in the 'CarComparison' folder in DigitalOcean Spaces
         $folder = 'CarComparison';
-        $imagePath = $request->file('image')->store($folder, 'spaces'); // Store image in 'CarComparison/' folder
+        $imagePath = $request->file('image2')->store($folder, 'spaces'); // Store image in 'CarComparison/' folder
+        $image2Url = Storage::disk('spaces')->url($imagePath);
 
-        // Generate the URL for the uploaded image
-        $imageUrl = Storage::disk('spaces')->url($imagePath);
-
-        // Get the second image URL from the request
-        $image2Url = $request->input('image_url');
 
         // Prepare the OpenAI API request
         $client = new HttpClient();
@@ -140,11 +169,11 @@ class VehicleComparisonController extends Controller
                         ],
                         [
                             'type' => 'image_url',
-                            'image_url' => ['url' => $image2Url]
+                            'image_url' => ['url' => $image1Url]
                         ],
                         [
                             'type' => 'image_url',
-                            'image_url' => ['url' => $imageUrl]
+                            'image_url' => ['url' => $image2Url]
                         ]
                     ]
                 ]
@@ -167,17 +196,28 @@ class VehicleComparisonController extends Controller
             // Get the description and ensure it's properly decoded
             $description = $body['choices'][0]['message']['content'] ?? 'No description provided';
 
+            if (strlen(trim($description)) <= 10 || $description === 'No description provided') {
+                return response()->json(['error' => 'The process failed, please try again later'], 400);
+            }
+
             // Convert the description to UTF-8 if necessary
             if (!mb_check_encoding($description, 'UTF-8')) {
                 $description = mb_convert_encoding($description, 'UTF-8');
             }
 
+
+            $institution->balance -= $cost;
+            $institution->save();
+
         } catch (RequestException $e) {
-            return response()->json(['error' => 'Failed to process the AI: ' . $e->getMessage()], 500);
+            // return response()->json(['error' => $image1Url], 500);
+
+            return response()->json(['error' => 'The process failed, please try again later: ' . $e->getMessage()], 500);
         }
 
+
         // Return the generated description with proper encoding
-        return response()->json(['description' => $description], JSON_UNESCAPED_UNICODE);
+        return response()->json(['description' => $description, 'cost'=> $cost], JSON_UNESCAPED_UNICODE);
     }
 
 }
