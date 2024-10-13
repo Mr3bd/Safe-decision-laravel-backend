@@ -196,7 +196,7 @@ class RentalContractController extends Controller
 
             // $this->sendWhatsAppMessage($contract->tenant->whatsapp_number, 'Rental contract created');
             // $this->scheduleWhatsAppMessages($contract->tenant->whatsapp_number, $contract);
-            event(new CarContractCreated($contract));
+            // event(new CarContractCreated($contract));
 
             return response()->json(['message' => 'Rental contract updated successfully'], 200);
         } catch (\Exception $e) {
