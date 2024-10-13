@@ -1,281 +1,216 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en" dir="rtl"> <!-- Set the direction to RTL -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عقد   
- تأجير سيارة (Rent A Car Contract)</title>
+    <title>Car Rental Contract</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            color: black;
-            direction: rtl;
-            text-align: right;
+            font-family: sans-serif;
+            color: #000;
+            text-align: right; /* Align text to the right */
         }
 
-        .contract-container {
+        .container {
             width: 100%;
-            max-width: 210mm;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border: 2px solid #000;
-            page-break-after: always;
+            padding: 0px 20px;
+            margin: auto;
+            box-sizing: border-box;
         }
 
-        .header {
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Align content at the start */
+        }
+
+        .image-container {
+            width: 100%; /* Full width for the image container */
             text-align: center;
-            margin-bottom: 20px;
-            position: relative;
+            margin-top: 10px; /* Add some margin to separate from the header */
+            border: 2px solid black; /* Add a black border around the image */
+            padding: 5px; /* Space between the image and the border */
         }
 
-        .header img.logo {
-            max-width: 200px;
+        img {
+            max-width: 100%; /* Ensures the image does not exceed the container's width */
+            height: 250px; /* Increased height for better visibility */
+            object-fit: contain; /* Ensures the image fits nicely within its container */
         }
 
-        .header img.center-top-image {
-            max-width: 10%;  /* Set max width to 10% */
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .header h1 {
-            margin: 0;
-            color: #D6B046;
+        .fuel-section {
+            width: 100%; /* Full width for the fuel section */
+            margin-top: 10px;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            font-size: 12px;
+            border-collapse: collapse; /* Collapse borders for better appearance */
         }
 
-        table, th, td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: right;
-        }
-
-        th {
-            background-color: #D6B046;
+        .head {
+            width: 100%;
+            border: 2px solid black;
+            background-color: #d6b045;
             color: white;
+            font-size: 16px;
+            text-align: center;
         }
 
-        .fuel-section {
+        .tbody {
+            color: black;
+            font-size: 14px; /* Slim font size for better fitting */
+            text-align: right; /* Align tbody text to the right */
+        }
+
+        td {
+            font-size: 14px; /* Adjusted font size to fit A3 page */
+            padding: 10px; /* Increased padding for taller cells */
+            text-align: center; /* Center text within the table cells */
+            height: 40px; /* Increased height for better visibility */
+        }
+
+        .fuel-table td {
+            width: 20%; /* Narrower column width for the fuel table */
+        }
+
+        h4 {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .header {
+            text-align: center; /* Center the contract name and company details */
+            margin-bottom: 20px;
+        }
+
+        .notes {
             margin-top: 20px;
         }
 
-        .fuel-labels {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 5px;
-            font-size: 14px;
-        }
-
-        .fuel-label {
-            display: flex;
-            align-items: center;
-        }
-
-        .fuel-checkbox {
-            margin-left: 10px;
-        }
-
-        .print-button {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background-color: #D6B046;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .print-button:hover {
-            background-color: #B59634;
-        }
     </style>
 </head>
-
 <body>
-    <button class="print-button" onclick="window.print()">Print Contract</button>
-
-    <div class="contract-container">
+    <div class="container">
         <div class="header">
-            <img class="center-top-image" src="https://via.placeholder.com/150" alt="Center Top Image">
-            <img class="logo" src={{ $rentalContract->institution->logo_image }} alt="شعار تأجير سيارات (Rent A Car Logo)">
-            <h1>عقد تأجير سيارة (Rent A Car Contract)</h1>
-            <p>اسم الشركة، الفرع، تفاصيل الاتصال ({{  $rentalContract->institution->name }}, {{ $rentalContract->institution->address_ar }}, {{  $rentalContract->institution->emergency_number }})</p>
-            <p>رقم العقد: <span class="bold">{{ $rentalContract->id }}</span> (Contract No: {{ $rentalContract->id }})</p>
+            <img src="{{ asset($rentalContract->institution->logo_image) }}" alt="Company Logo" style="width: 120px; height: auto; margin-bottom: 4px;">
+            <h3>(Rent A Car Contract) عقد تاجير سيارة</h3>
+            <h3>
+                <span id="name_company">{{ $rentalContract->institution->name }}</span>
+            </h3>
+            <h5>
+                <span id="branch">{{ $rentalContract->institution->emergency_number }} </span>, <span id="Details">{{ $rentalContract->institution->address_en }}</span>
+            </h5>
+            <h4>رقم العقد Contract No</h4>
+            <h4> #{{ $rentalContract->id }} </h4>
         </div>
 
-        <table>
-            <tr>
-                <th>اسم المستأجر (Renter's Name)</th>
-                <th>رقم الهاتف (Phone Number)</th>
-                <th>واتساب (WhatsApp)</th>
-                <th>العنوان (Address)</th>
+        <!-- Combined Renter and Car Info Table -->
+        <table class="t0" border="1">
+            <tr class="head">
+                <td>(Renter's Name) اسم المستاجر</td>
+                <td>(Phone Number) رقم الهاتف</td>
+                <td>(Whatsapp) واتساب</td>
+                <td>(Address) العنوان</td>
+                <td>(Type of Car ) نوع السيارة</td>
+                <td>(Plate Number) رقم اللوحة</td>
+                <td>(Date & Time of Rent) تاريخ ووقت الاستئجار</td>
+                <td>(Date & Time of Return) تاريخ ووقت التسليم</td>
             </tr>
-            <tr>
+            <tr class="tbody">
                 <td>{{ $rentalContract->tenant->first_name }} {{ $rentalContract->tenant->middle_name }} {{ $rentalContract->tenant->last_name }}</td>
                 <td>{{ $rentalContract->tenant->phone_number }}</td>
                 <td>{{ $rentalContract->tenant->whatsapp_number }}</td>
-                <td>{{ $rentalContract->tenant->region  }}</td>
-            </tr>
-            <tr>
-                <th>نوع السيارة (Type of Car)</th>
-                <th>رقم اللوحة (Plate No.)</th>
-                <th>الكيلومترات عند الاستلام (Kilometers In)</th>
-                <th>الكيلومترات عند التسليم (Kilometers Out)</th>
-            </tr>
-            <tr>
-                {{-- <td>{{ $contract->car_type }}</td>
-                <td>{{ $contract->plate_number }}</td>
-                <td>{{ $contract->kilometers_in }}</td>
-                <td>{{ $contract->kilometers_out }}</td> --}}
-            </tr>
-        </table>
-
-        <table>
-            <tr>
-                <th>تاريخ الاستئجار (Date of Rent)</th>
-                <th>وقت الاستئجار (Time of Rent)</th>
-                <th>تاريخ التسليم (Date of Return)</th>
-                <th>وقت التسليم (Time of Return)</th>
-            </tr>
-            <tr>
-                {{-- <td>{{ $contract->rent_date }}</td>
-                <td>{{ $contract->rent_time }}</td>
-                <td>{{ $contract->return_date }}</td>
-                <td>{{ $contract->return_time }}</td> --}}
+                <td>
+                    {{ $rentalContract->tenant->city->name_ar }},{{ $rentalContract->tenant->city->name_en }}
+                    <br>
+                    {{ $rentalContract->tenant->region }}
+                    <br>
+                    {{ $rentalContract->tenant->street }}
+                    <br>
+                    {{ $rentalContract->tenant->building_number }}
+                </td>
+                <td>
+                    {{ $rentalContract->car->model->manufacture->name_ar}} {{ $rentalContract->car->model->manufacture->name_en}}
+                    <br>
+                    {{ $rentalContract->car->model->name_en}}
+                    <br>
+                    {{ $rentalContract->car->manu_year}}
+                </td>
+                <td>{{ $rentalContract->car->tagNumber}}</td>
+                <td>{{ $rentalContract->rent_date}}</td>
+                <td>{{ $rentalContract->return_date}}</td>
             </tr>
         </table>
 
-        <div class="fuel-section">
-            <h2 class="fuel-gauge-title">قراءة الوقود (Fuel Reading)</h2>
-
-            <div class="fuel-labels">
-                <span class="fuel-label">0% <span class="fuel-checkbox" id="fuel-0">⬜</span></span>
-                <span class="fuel-label">25% <span class="fuel-checkbox" id="fuel-25">⬜</span></span>
-                <span class="fuel-label">50% <span class="fuel-checkbox" id="fuel-50">⬜</span></span>
-                <span class="fuel-label">75% <span class="fuel-checkbox" id="fuel-75">⬜</span></span>
-                <span class="fuel-label">100% <span class="fuel-checkbox" id="fuel-100">⬜</span></span>
-            </div>
+        <!-- Car Scratches Section -->
+        <h4>Car Scratches (الخدوش على السيارة)</h4>
+        <div class="image-container">
+            <img src="{{ asset($rentalContract->scratches_image) }}" alt="Car Scratches">
         </div>
 
-        <div class="checklist-section">
-            <h2 style="color: #D6B046;">قائمة الفحص (Checklist)</h2>
-            <table>
-                <tr>
-                    <th>البند (Item)</th>
-                    <th>الحالة (Status)</th>
-                    <th>البند (Item)</th>
-                    <th>الحالة (Status)</th>
+        <!-- Fuel Section -->
+        <div class="fuel-section">
+            <h4>الوقود (Fuel)</h4>
+            <table class="t4 fuel-table" border="1">
+                <tr class="head">
+                    <td>0%</td>
+                    <td>25%</td>
+                    <td>50%</td>
+                    <td>75%</td>
+                    <td>100%</td>
                 </tr>
-                <tr>
-                    <td>الرخصة (License)</td>
-                    <td>[✓] موجود (Present)</td>
-                    <td>المكيف (A/C)</td>
-                    <td>[✓] موجود (Present)</td>
-                </tr>
-                <tr>
-                    <td>الراديو (Radio)</td>
-                    <td>[✓] موجود (Present)</td>
-                    <td>CD / كاسيت (CD / Cassette)</td>
-                    <td>[✗] مفقود (Missing)</td>
-                </tr>
-                <tr>
-                    <td>المطفأة الأمامية (Front Ashtray)</td>
-                    <td>[✓] موجود (Present)</td>
-                    <td>المطفأة الخلفية (Back Ashtray)</td>
-                    <td>[✓] موجود (Present)</td>
-                </tr>
-                <tr>
-                    <td>المرآة اليمنى (Right Mirror)</td>
-                    <td>[✓] موجودة (Present)</td>
-                    <td>المرآة اليسرى (Left Mirror)</td>
-                    <td>[✓] موجودة (Present)</td>
-                </tr>
-                <tr>
-                    <td>الأضواء الأمامية (Front Lights)</td>
-                    <td>[✓] موجودة (Present)</td>
-                    <td>الأضواء الخلفية (Rear Lights)</td>
-                    <td>[✓] موجودة (Present)</td>
-                </tr>
-                <tr>
-                    <td>فرش الأرضية (Floor Mats)</td>
-                    <td>[✓] موجود (Present)</td>
-                    <td>غطاء العجلات (Wheel Caps)</td>
-                    <td>[✓] موجود (Present)</td>
-                </tr>
-                <tr>
-                    <td>الإطار الاحتياطي (Spare Tire)</td>
-                    <td>[✓] موجود (Present)</td>
-                    <td>الرافعة (Jack)</td>
-
-<td>[✓] موجودة (Present)</td>
-                </tr>
-                <tr>
-                    <td>الأدوات (Tools)</td>
-                    <td>[✓] موجودة (Present)</td>
+                <tr class="tbody">
+                    <td style="background-color: {{ $rentalContract->fuel_before_reading >= 0 ? 'red' : 'white' }};"></td> <!-- Red for 0% -->
+                    <td style="background-color: {{ $rentalContract->fuel_before_reading >= 0.25 ? 'brown' : 'white' }};"></td> <!-- Brown for 25% -->
+                    <td style="background-color: {{ $rentalContract->fuel_before_reading >= 0.5 ? 'orange' : 'white' }};"></td> <!-- Orange for 50% -->
+                    <td style="background-color: {{ $rentalContract->fuel_before_reading >= 0.75 ? 'limegreen' : 'white' }};"></td> <!-- Lime Green for 75% -->
+                    <td style="background-color: {{ $rentalContract->fuel_before_reading == 1.0 ? 'green' : 'white' }};"></td> <!-- Green for 100% -->
                 </tr>
             </table>
         </div>
 
-        <!-- Remarks Section -->
-        <table>
-            <tr>
-                <th colspan="4">ملاحظات (Remarks)</th>
+        <!-- Checklist Section -->
+        <h4>الفحص (Checklist)</h4>
+        <table border="1">
+            <tr class="head">
+                <td>Feature (المواصفات)</td>
+                <td>Status (الحالة)</td>
+                <td>Feature (المواصفات)</td>
+                <td>Status (الحالة)</td>
+                <td>Feature (المواصفات)</td>
+                <td>Status (الحالة)</td>
             </tr>
-            <tr>
-                <td colspan="4">
-                    <br /><br /><br /><br /><br /><br /><br /><br /><br />
-                </td>
+            @foreach(array_chunk($allFeatures->toArray(), 3) as $featureSet)
+                <tr class="tbody">
+                    @foreach($featureSet as $feature)
+                        <td>{{ $feature['name_ar'] }} ({{ $feature['name_en'] }})</td>
+                        <td>{{ in_array($feature['id'], $selectedFeatures) ? 'X' : '' }}</td>
+                    @endforeach
+                    @for ($i = count($featureSet); $i < 3; $i++)
+                        <td></td>
+                        <td></td>
+                    @endfor
+                </tr>
+            @endforeach
+        </table>
+
+        <!-- Remarks Section -->
+        <h4 class="notes">ملاحظات (Remarks)</h4>
+        <table border="1">
+            <tr class="head">
+                <td>ملاحظات</td>
+            </tr>
+            <tr class="tbody">
+                <td>{{ $tenantReview->description ?? '' }}</td>
             </tr>
         </table>
 
-        <!-- Signatures -->
-        <div class="sign-section">
-            <p><strong>توقيع المستأجر: __ (Renter's Signature)</strong></p>
-            <p><strong>توقيع الموظف: __ (Employee's Signature)</strong></p>
-            <p><strong>التاريخ: __ (Date)</strong></p>
-        </div>
-
-        <!-- Note about exceeding 200 km per day -->
-        <div class="note">
-            <p>ملاحظة: لا تتجاوز 200 كم في اليوم، أو ستُفرض رسوم إضافية. (Note: Do not exceed 200 km per day, or extra
-                charges will apply.)</p>
-        </div>
-
-        <!-- Bill of Exchange Section (Image) -->
-        <div class="bill-of-exchange">
-            <img src="https://tsd.fra1.cdn.digitaloceanspaces.com/Assets/WhatsApp%20Image%202024-10-09%20at%202.23.35%20AM.jpeg"
-                alt="صورة الكمبيالة (Bill of Exchange Image)">
+        <div class="text">
+            <h4>توقيع المتساجر:</h4>
+            <h4>توقيع الموظف:</h4>
+            <h4>التاريخ:</h4>
         </div>
     </div>
-
-    <script>
-        // Set the fuel level (can be 0, 25, 50, 75, or 100)
-        var fuelLevel = 25;
-
-        // Function to check the appropriate fuel level checkbox
-        function checkFuelLevel(level) {
-            document.getElementById('fuel-' + level).textContent = '✔️';
-        }
-
-        // Call the function with the fuel level
-        checkFuelLevel(fuelLevel);
-    </script>
-
 </body>
-
 </html>

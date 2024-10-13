@@ -37,7 +37,9 @@ class RentalContract extends Model
         'left_side',
         'fuel_before_reading',
         'fuel_after_reading',
-        'price'
+        'price',
+        'scratches_done',
+        'scratches_image'
     ];
 
     // Define the relationships if necessary

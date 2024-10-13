@@ -32,7 +32,7 @@ class Tenant extends Model
     //     return $this->hasMany(Rental::class); // Assuming you have a Rental model
     // }
 
-      public function city()
+    public function city()
     {
         return $this->belongsTo(City::class);
     }

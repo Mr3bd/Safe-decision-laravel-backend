@@ -16,8 +16,8 @@ class VehicleComparisonController extends Controller
     {
         // Validate the input
         $request->validate([
-            'image1' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image2' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image1' => 'required|image|mimes:jpeg,png,jpg,gif|max:10000',
+            'image2' => 'required|image|mimes:jpeg,png,jpg,gif|max:10000',
         ]);
 
         // Get the language from the header (default to 'ar' if not provided)
@@ -121,7 +121,7 @@ class VehicleComparisonController extends Controller
         // Validate the input: one file and one image URL
         $request->validate([
             'image_url' => 'required|url',
-            'image2' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image2' => 'required|image|mimes:jpeg,png,jpg,gif|max:10000',
         ]);
 
         // Get the second image URL from the request

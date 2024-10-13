@@ -94,7 +94,8 @@ class InstitutionController extends Controller
         $institution = Institution::create([
             'name' => $pendingUser->institution->name,
             'institution_number' => $pendingUser->institution->institution_number,
-            'institution_type_id'=> $pendingUser->institution->institution_type_id
+            'institution_type_id'=> $pendingUser->institution->institution_type_id,
+            'isActive'=> 0
         ]);
 
         // Create the user
@@ -201,7 +202,7 @@ class InstitutionController extends Controller
             'emergency_number' => 'required|string|regex:/^\+962[7][0-9]{8}$/',
             'address_ar' => 'required|string|max:255',
             'address_en' => 'required|string|max:255',
-            'logo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10000',
             'balance' => 'required|numeric|min:0', // Validation for price
 
         ]);
@@ -238,7 +239,7 @@ class InstitutionController extends Controller
             'emergency_number' => 'required|string|regex:/^\+962[7][0-9]{8}$/',
             'address_ar' => 'required|string|max:255',
             'address_en' => 'required|string|max:255',
-            'logo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10000',
             'balance' => 'required|numeric|min:0',
             'isActive' => 'required|boolean',
         ]);

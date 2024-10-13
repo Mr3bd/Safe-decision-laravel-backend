@@ -15,7 +15,8 @@ class TenantCarRentReview extends Model
         'violations',
         'financial',
         'cleanliness',
-        'description'
+        'description',
+        'national_id'
     ];
 
     // Define relationships

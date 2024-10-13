@@ -66,7 +66,18 @@ Route::middleware('auth:sanctum')->get('/cities', [AddressController::class, 'ge
 Route::middleware('auth:sanctum')->get('/cities-by-country/{countryId}', [AddressController::class, 'getCitiesByCountry']);
 
 
-Route::middleware('auth:sanctum')->post('/create-car-rentalcontract', [RentalContractController::class, 'store']);
+Route::middleware('auth:sanctum')->post('/initiate-car-rental-contract', [RentalContractController::class, 'initiateContract']);
+
+
+// Remove this:
+
+Route::middleware('auth:sanctum')->post('/test-whats', [RentalContractController::class, 'testWhats']);
+
+
+Route::middleware('auth:sanctum')->post('/update-car-rental-contract', [RentalContractController::class, 'update']);
+Route::middleware('auth:sanctum')->post('/add-car-scratches', [RentalContractController::class, 'addCarScratchCheck']);
+Route::middleware(['auth:sanctum', 'checkrole:1,10'])->post('/skip-car-scratch', [RentalContractController::class, 'skipScratchContract']);
+
 
 Route::middleware(['auth:sanctum', 'checkrole:1,10'])->get('/get-my-car-contracts', [RentalContractController::class, 'getContracts']);
 
@@ -86,4 +97,6 @@ Route::middleware('auth:sanctum')->get('/get-rental-car-contract/{id}', [RentalC
 Route::middleware('auth:sanctum')->get('/rental-car-contract/{id}/features', [RentalContractController::class, 'getContractFeatures']);
 
 Route::middleware('auth:sanctum')->get('/get-tenant-avg-reviews/{tenantId}', [TenantController::class, 'getReviewAverages']);
+
+Route::middleware('auth:sanctum')->get('/get-tenant-by-national/{id}', [TenantController::class, 'getTenantByNational']);
 

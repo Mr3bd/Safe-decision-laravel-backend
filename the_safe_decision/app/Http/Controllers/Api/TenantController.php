@@ -145,7 +145,7 @@ class TenantController extends Controller
     {
         try {
             // Fetch averages for each category
-            $averages = TenantCarRentReview::where('tenant_id', $tenantId)
+            $averages = TenantCarRentReview::where('national_id', $tenantId)
                 ->selectRaw('
                     AVG(appointments) as avg_appointments,
                     AVG(accidents) as avg_accidents,
@@ -182,6 +182,26 @@ class TenantController extends Controller
                 'message' => 'An error occurred while fetching the review averages.',
                 'error' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+
+    public function getTenantByNational($id)
+    {
+        try {
+            $tenant = Tenant::with(['city'])
+            ->where('national_id', $id)->first();
+
+            return response()->json([
+                'success' => true,
+                'data' => $tenant
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tenant not found',
+                'error' => $e->getMessage()
+            ], 400);
         }
     }
 }
