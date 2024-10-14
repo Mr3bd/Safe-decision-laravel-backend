@@ -307,11 +307,16 @@ class RentalContractController extends Controller
         ], 200);
     }
 
-    public function skipScratchContract(Request $request, $id)
+    public function skipScratchContract(Request $request)
     {
 
+        // Validate incoming request
+        $validated = $request->validate([
+            'contractId' => 'required|exists:car_rent_contracts,id'
+        ]);
+
         // Find the user by ID
-        $rentalContract = RentalContract::find($id);
+        $rentalContract = RentalContract::find($validated['contractId']);
 
         // If user not found, return error response
         if (!$rentalContract) {
