@@ -473,13 +473,14 @@ class RentalContractController extends Controller
             'mode' => 'utf-8',
             'format' => 'A4',
             'default_font' => 'Cairo',
+            'tempDir' => sys_get_temp_dir() . '/mpdf'
         ]);
 
         $mpdf->WriteHTML($html);
 
         $fileName = 'contract_' . $contract_id . '.pdf';
 
-        return response($mpdf->Output($fileName, 'S'))
+        return response($mpdf->Output($fileName, 'D'))
             ->header('Content-Type', 'application/pdf')
             ->header('Access-Control-Allow-Origin', '*') // Allow all origins (adjust as needed)
             ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
