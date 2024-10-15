@@ -486,13 +486,18 @@ class RentalContractController extends Controller
         $fileName = 'contract_' . $contract_id . '.pdf';
 
         // Output as inline (stream) response
-        return response($mpdf->Output($fileName, 'I'))
+        return response($mpdf->Output($fileName, 'D'))
             ->header('Content-Type', 'application/pdf')
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
             ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
+
+
+
+
+    
     public function getContractById($id)
     {
         try {
@@ -554,7 +559,9 @@ class RentalContractController extends Controller
 
 
     // Function to send a WhatsApp message
-private function sendWhatsAppMessage($to, $message)
+
+
+    private function sendWhatsAppMessage($to, $message)
 {
     $params = [
         'token' => '4o38ccznakotv7m0',
