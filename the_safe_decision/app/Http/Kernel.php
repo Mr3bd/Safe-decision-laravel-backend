@@ -43,6 +43,8 @@ class Kernel extends HttpKernel
             EnsureFrontendRequestsAreStateful::class, // Ensures frontend requests are stateful
             'throttle:api', // Rate limiting for API
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Fruitcake\Cors\HandleCors::class, // Add this line
+
         ],
     ];
 
