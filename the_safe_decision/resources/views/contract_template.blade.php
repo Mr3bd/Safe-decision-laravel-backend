@@ -93,7 +93,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset($rentalContract->institution->logo_image) }}" alt="Company Logo" style="width: 120px; height: auto; margin-bottom: 4px;">
+            <img src={{ $rentalContract->institution->logo_image ?? 'https://cdn-icons-png.freepik.com/256/16000/16000938.png?semt=ais_hybrid' }} alt="Company Logo" style="width: 120px; height: auto; margin-bottom: 4px;">
             <h3>(Rent A Car Contract) عقد تاجير سيارة</h3>
             <h3>
                 <span id="name_company">{{ $rentalContract->institution->name }}</span>
@@ -146,7 +146,7 @@
         <!-- Car Scratches Section -->
         <h4>Car Scratches (الخدوش على السيارة)</h4>
         <div class="image-container">
-            <img src="{{ asset($rentalContract->scratches_image) }}" alt="Car Scratches">
+            <img src={{ $rentalContract->scratches_image?? "https://tsd.fra1.cdn.digitaloceanspaces.com/Assets/car_scratch.jpeg" }} alt="Car Scratches">
         </div>
 
         <!-- Fuel Section -->
@@ -168,10 +168,10 @@
                     <td style="background-color: {{ $rentalContract->fuel_before_reading == 1.0 ? 'green' : 'white' }};"></td> <!-- Green for 100% -->
                 </tr>
             </table>
-        </div>
+        </div> 
 
         <!-- Checklist Section -->
-        <h4>الفحص (Checklist)</h4>
+       <h4>الفحص (Checklist)</h4>
         <table border="1">
             <tr class="head">
                 <td>Feature (المواصفات)</td>
