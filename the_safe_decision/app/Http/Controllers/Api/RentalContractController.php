@@ -449,40 +449,46 @@ class RentalContractController extends Controller
         ], 200);
     }
 
-    public function downloadContract($contract_id)
+  public function downloadContract($contract_id)
     {
-        // Retrieve the institution based on the given institution_id
-         $rentalContract = RentalContract::with([
+        // Retrieve the rental contract
+        $rentalContract = RentalContract::with([
             'institution',
             'tenant.city.country',
             'featuresBefore',
             'featuresAfter'
         ])->find($contract_id);
 
+        if (!$rentalContract) {
+            return response()->json(['message' => 'Rental contract not found.'], 404);
+        }
+
         // Fetch all vehicle features
         $allFeatures = VehicleFeature::all(); // Get all features as full records
         $selectedFeatures = $rentalContract->featuresBefore->pluck('id')->toArray();
-        if (!$rentalContract) {
-            return response()->json(['message' => 'Rental not found.'], 404);
-        }
         $tenantReview = TenantCarRentReview::where('contract_id', $contract_id)->first();
 
         $html = view('contract_template', compact('rentalContract', 'allFeatures', 'selectedFeatures', 'tenantReview'))->render();
 
-        $mpdf = new Mpdf([
+        $mpdf = new \Mpdf\Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
             'default_font' => 'Cairo',
-            'tempDir' => sys_get_temp_dir() . '/mpdf'
+            'tempDir' => '/tmp/mpdf' // Absolute path
         ]);
 
+        // Set a higher execution time limit
+        set_time_limit(300);
+
+        // Write the HTML content to the PDF
         $mpdf->WriteHTML($html);
 
         $fileName = 'contract_' . $contract_id . '.pdf';
 
-        return response($mpdf->Output($fileName, 'D'))
+        // Output as inline (stream) response
+        return response($mpdf->Output($fileName, 'I'))
             ->header('Content-Type', 'application/pdf')
-            ->header('Access-Control-Allow-Origin', '*') // Allow all origins (adjust as needed)
+            ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
             ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
