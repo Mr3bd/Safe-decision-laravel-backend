@@ -93,6 +93,7 @@ class CarController extends Controller
         
         // Fetch institution cars with related institution and model data, applying pagination
         $institutionCars = InstitutionCar::with(['institution', 'model.manufacture'])
+            ->orderBy('created_at', 'desc' )
             ->where('institution_id', $user->institution_id) // Filter by user's institution
             ->paginate($pageSize, ['*'], 'page', $pageIndex);
 
